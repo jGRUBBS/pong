@@ -1,6 +1,7 @@
 var windowHeight, windowWidth, scrollMax, scrollPosition, optimalHeight, scrollOld = 0, previousStep, currentStep;
 
 $(function(){
+	$('#scroll-container').css({'opacity':'0'});
 	setScalingVars();
 	scroll();
 });
@@ -24,18 +25,23 @@ function setScalingVars(){
 	positionFloor();
 }
 
-function item(selector,startTime,endTime,animations){
+function item(selector,startTime,endTime,animations,pause,resume){
 	this.selector = selector;
 	this.container = this.selector.parents().eq(0);
 	this.originalHeight = parseInt(selector.css('height').replace('px',''));
 	this.originalWidth  = parseInt(selector.css('width').replace('px',''));
 	this.currentBottom  = parseInt(selector.css('bottom').replace('px',''));
+	this.currentLeft		= parseInt(selector.css('left').replace('px',''));
 	this.adjustedHeight = this.originalHeight * windowScale;
 	this.adjustedWidth  = this.originalWidth * windowScale;
+	this.adjustedLeft   = this.currentLeft * windowScale;
 	this.startTime      = startTime;
 	this.endTime				= endTime;
+	this.pause					= pause;
+	this.resume					= resume;
 	this.animations     = animations;
 	this.count					= 0;
+	// console.log(this.currentLeft);
 	this.selector.css({'height':this.adjustedHeight,'width':this.adjustedWidth});
 }
 
@@ -44,14 +50,27 @@ function setStaticVars(){
 	floor			= $('#ledge'),
 	group1		= $('#group-1'),
 	group2		= $('#group-2'),
-	item[1]			= new item($('#item-1'),0,3.7,['accelerate',100]),
-	item[2]			= new item($('#item-2'),0,3.7,['accelerate',150]),
-	item[3]			= new item($('#item-3'),0,3.7,['accelerate',50]),
-	item[4]			= new item($('#item-4'),0,3.7,['accelerate',100]),
+	group3		= $('#group-3'),
+	group4		= $('#group-4'),
+	group5    = $('#group-5'),
+	group6    = $('#group-6'),
+	group7    = $('#group-7'),
+	group8    = $('#group-8'),
+	group9    = $('#group-9'),
+	item[1]			= new item($('#item-1'),0,7.4,['accelerate',100]),
+	item[2]			= new item($('#item-2'),0,7.4,['accelerate',150]),
+	item[3]			= new item($('#item-3'),0,7.4,['accelerate',50]),
+	item[4]			= new item($('#item-4'),0,7.4,['accelerate',100]),
 	item[5]			= new item($('#item-5')),
-	item[6]			= new item($('#item-6'),0,3.7,['accelerate',100]),
-	item[7]			= new item($('#item-7'),6,13,['freeze','spin']);
-	item[8]			= new item($('#item-8'),6,12,['slide','left-right',7]);
+	item[6]			= new item($('#item-6'),0,7.4,['accelerate',100]),
+	item[7]			= new item($('#item-7'),12,24,['freeze','spin']),
+	item[8]			= new item($('#item-8'),12,29.4,['slide','left-right',7],22,24.6),
+	item[9]			= new item($('#item-9'),37.4,41,['freeze']),
+	item[10]		= new item($('#item-10'),23.4,48.6,['slide','left-right',9],36,41),
+	item[11]		= new item($('#item-11'),42.6,82,['slide','left-right',9],55.2,61.8),
+	item[12]		= new item($('#item-12'),42.6,82,['slide','right-left',9],55.2,57.8),
+	item[13]		= new item($('#item-13'),78,120,['slide','left-right',9],92,120),
+	item[14]		= new item($('#item-14'));
 }
 
 function positionFloor(){
@@ -59,12 +78,40 @@ function positionFloor(){
 }
 
 function positionGroups(){
-	var group1height = group1.height()*windowScale;
-			group2height = group2.height()*windowScale;
-			console.log(group1height);
-	group1.css({'top':floorPosition-group1height,'height':group1height});
-	group2.css({'top':(group1.offset().top+group1height)+(windowHeight*0.6),'height':group2height});
-
+	var group1height = group1.height()*windowScale,
+			group1width	 = group1.width()*windowScale,
+			group2height = group2.height()*windowScale,
+			group4height = group4.height()*windowScale;
+			
+			// console.log(group1height);
+	
+	for(var i=1;i<15;i++){
+		if (i<7){
+			// GROUP 1
+			item[i].selector.css({'left':item[i].adjustedLeft});
+		} else if (i==7 || i==9 || i==14) {
+			// BOTTLE SPIN
+			item[i].selector.css({'margin':'0 '+(-item[i].adjustedWidth/2)+'px'});
+		} else if (i==8 || i==10 || i==11 || i==13) {
+			// BOTTLE SPIN TEXT
+			item[i].selector.css({'left':-item[i].adjustedWidth});
+		} else if (i==12) {
+			item[i].currentLeft = windowWidth;
+			item[i].selector.css({'left':item[i].currentLeft});
+		}
+	}
+			
+	group1.css({'top':floorPosition-group1height,'height':group1height,'width':group1width,'margin':'0 '+(-(group1width/2))+'px'});
+	var group2top = (group1.offset().top+group1height)+(windowHeight*0.6);
+	group2.css({'top':group2top,'height':group2height});
+	group3.css({'top':windowHeight/2});
+	group4.css({'top':(group2top+(windowHeight*2)+item[9].adjustedHeight),'height':group4height});
+	group5.css({'top':windowHeight/2});
+	group6.css({'top':(windowHeight/2)+(item[11].adjustedHeight/2)});
+	group7.css({'top':windowHeight/2});
+	group8.css({'top':windowHeight/2});
+	group9.css({'top':scrollMax+(item[13].adjustedHeight*2),'height':item[14].adjustedHeight});
+	$('#scroll-container').animate({'opacity':'1'},400);
 }
 
 function scroll(){
@@ -153,28 +200,47 @@ function accelerate(itemNumber){
 function slide(itemNumber){
 	var thisItem 					 = item[itemNumber],
 			pairedItem				 = item[thisItem.animations[2]],
-			originalLeft		   = (thisItem.animations[1]=='left-right') ? -thisItem.adjustedWidth : windowWidth+thisItem.adjustedWidth,
-			currentTime 			 = scrollPercent,
-			totalTime  			 	 = thisItem.endTime - thisItem.startTime,
-			progress    			 = (currentTime - thisItem.startTime)/totalTime,
-			leftMax					   = (thisItem.animations[1]=='left-right') ? pairedItem.selector.offset().left + pairedItem.adjustedWidth + 200: windowWidth*0.25;
-	if (progress > 0.96 && thisItem.count == 0 && scrollAmount > 0) {
+			originalLeft		   = (thisItem.animations[1]=='left-right') ? -thisItem.adjustedWidth : windowWidth,
+			currentTime 			 = scrollPercent;
+			endTime1					 = thisItem.pause,
+			endTime2					 = thisItem.endTime,
+			startTime1				 = thisItem.startTime,
+			startTime2				 = thisItem.resume,
+			totalTime1  			 = endTime1 - startTime1,
+			totalTime2				 = endTime2 - startTime2,
+			progress1    			 = (currentTime - startTime1)/totalTime1,
+			progress2    			 = (currentTime - startTime2)/totalTime2,
+			leftMax1					 = (thisItem.animations[1]=='left-right') ? pairedItem.selector.offset().left + pairedItem.adjustedWidth + thisItem.adjustedWidth : originalLeft - windowWidth*0.25;
+			leftMax2					 = (thisItem.animations[1]=='left-right') ? windowWidth + thisItem.adjustedWidth : thisItem.adjustedWidth + windowWidth*0.25;
+	
+	if (progress1 > 0.96 && progress2 < 0) {
 		thisItem.selector.find('.blur').hide().removeClass('show');
 		thisItem.selector.find('.text').show().addClass('show');
 		thisItem.count = 1;
-	} else if (progress < 0.96 && thisItem.count == 1 && scrollAmount < 0) {
+	} else {
 		thisItem.selector.find('.blur').show().addClass('show');
 		thisItem.selector.find('.text').hide().removeClass('show');
 		thisItem.count = 0;
+	} 
+	
+	console.log(progress2);
+	
+	if (progress1 < 1){
+		console.log('leftMax1: '+leftMax1);
+		thisItem.currentLeft   = (thisItem.animations[1]=='left-right') ? (leftMax1 * progress1)+originalLeft : originalLeft - (leftMax1 * progress1);
+		thisItem.newLeft			 = thisItem.currentLeft
+		thisItem.selector.css({'left':thisItem.currentLeft});
+	} else if (progress2 > 0 && progress2 < 1) {
+		thisItem.currentLeft   = (thisItem.animations[1]=='left-right') ? (leftMax2 * progress2)+thisItem.newLeft : thisItem.newLeft - (leftMax2 * progress2);
+		thisItem.selector.css({'left':thisItem.currentLeft});
+		thisItem.count = 0;
 	}
-	thisItem.currentLeft   = (leftMax * progress)+originalLeft;
-	thisItem.selector.css({'left':thisItem.currentLeft});
 }
 
 function move(itemNumber){
 	var currentItem = item[itemNumber],
 			currentTime = scrollPercent,
-			totalTime   = currentItem.endTime - currentItem.startTime,
+			totalTime   = currentItem.endTime - currentItem.startTime - 0.5,
 			progress    = ((currentTime - currentItem.startTime)/totalTime)*100;
 	
 	// SLIDE ANIMATION
@@ -207,7 +273,7 @@ function move(itemNumber){
 
 function scrollAnimation(){
 	
-	console.log('scrollPosition: '+scrollPosition+' scrollAmount: '+scrollAmount+' scrollAdjusted: '+scrollAdjusted+' scrollPercent: '+scrollPercent+' scrollScale: '+scrollScale);
+	// console.log('scrollPosition: '+scrollPosition+' scrollAmount: '+scrollAmount+' scrollAdjusted: '+scrollAdjusted+' scrollPercent: '+scrollPercent+' scrollScale: '+scrollScale);
 	
 	$('.item').each(function(index){
 		move(index+1);	

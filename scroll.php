@@ -27,12 +27,47 @@
 						<img class="view-<?php echo $i.' '.$class; ?>" src="includes/images/bottle-spin/bottle_view<?php echo $i ?>.png" />
 					<?php } ?>	
 				</div>
-				<div id="item-8" class="item">
+			</div>
+			
+			<div id="group-3" class="group">
+			  <div id="item-8" class="item">
 					<img id="blur-1" class="blur show" src="includes/images/_01_parfum_txtblur.png" />
 					<img id="text-1" class="text hide" src="includes/images/_01_parfum_txt.png" />
 				</div>
 			</div>
 			
+			<div id="group-4" class="group">
+			  <div id="item-9" class="item"><img src="includes/images/mini-dot-bottle.png" /></div>
+			</div>  
+			
+			<div id="group-5" class="group">
+			  <div id="item-10" class="item">
+					<img id="blur-1" class="blur show" src="includes/images/_02_mini_txtblur.png" />
+					<img id="text-1" class="text hide" src="includes/images/_02_mini_txt.png" />
+				</div>
+			</div>
+			
+			<div id="group-6" class="group">
+			  <div id="item-11" class="item"><img src="includes/images/lotion.png" /></div>
+			</div>
+			
+			<div id="group-7" class="group">
+			  <div id="item-12" class="item">
+			    <img id="blur-1" class="blur show" src="includes/images/_03_lotion_txtblur.png" />
+			    <img id="text-1" class="text hide" src="includes/images/_03_lotion_txt.png" />  		
+			  </div>
+			</div>
+			
+			<div id="group-8" class="group">
+			  <div id="item-13" class="item">
+			    <img id="blur-1" class="blur show" src="includes/images/_03_lotion_txtblur.png" />
+			    <img id="text-1" class="text hide" src="includes/images/_04_gel_txt.png" />
+			  </div>
+			</div>
+			  
+			<div id="group-9" class="group">
+			  <div id="item-14" class="item"><img src="includes/images/gel.png" /></div>
+			</div>          
 			
 		</div>
 	</div>

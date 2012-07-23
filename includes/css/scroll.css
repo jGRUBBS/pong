@@ -12,7 +12,7 @@
 
 #inner-scroll-container {
 	position:relative;
-	height:2000%;
+	height:1000%;
 	width:100%;
 }
 
@@ -31,6 +31,7 @@
 
 .group {
 	position:absolute;
+	z-index:-1;
 }
 
 #group-1 {
@@ -46,7 +47,24 @@
 	width:100%;
 	left:0;
 	top:0;
-	z-index:-1;
+}
+
+#group-3, #group-5, #group-6, #group-7, #group-8 {
+	width:100%;
+	position:fixed;
+}
+
+#group-4 {
+	height:339px;
+	width:100%;
+	left:0;
+	top:0;
+}
+
+#group-9 {
+	position:absolute;
+	height:467px;
+	width:100%;
 }
 
 .item {
@@ -121,18 +139,40 @@
 	display:none;
 }
 
-#item-8 {
+#item-8, #item-10, #item-12, #item-13 {
 	height:97px;
 	width:240px;
 	top:60%;
 	left:-240px;
 }
 
-#item-8 img {
+#item-11 {
+	height:462px;
+	width:227px;
+	left:-227px;
+}
+
+#item-12 {
+	left:100%;
+}
+
+#item-8 img, #item-10 img, #item-12 img {
 	left:0;
 	top:0;
 }
 
-#item-8 .text {
+#item-8 .text, #item-10 .text, #item-12 .text {
 	display:none;
+}
+
+#item-9 {
+	height:339px;
+	width:156px;
+	/*top:100%;*/
+	margin:0 -78px;
+	left:50%;
+}
+
+#item-14 {
+	left:35%;
 }
